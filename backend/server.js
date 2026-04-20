@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const path = require('path'); // ✅ ADDED
 require('dotenv').config();
 
 const authRoutes = require('./routes/auth');
@@ -16,7 +17,7 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Routes
+// API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/transaction', transactionRoutes);
 app.use('/api/admin', adminRoutes);
@@ -24,6 +25,14 @@ app.use('/api/admin', adminRoutes);
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'EcoTrack AI Backend Running', timestamp: new Date() });
+});
+
+// ✅ Serve frontend build (ADD BEFORE app.get("*"))
+app.use(express.static(path.join(__dirname, "../frontend/dist")));
+
+// ✅ Handle React routes (MUST BE LAST ROUTE)
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
 });
 
 // MongoDB Connection
