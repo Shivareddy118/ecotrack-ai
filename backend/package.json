@@ -1,10 +1,9 @@
 {
-  "name": "ecotrack-backend",
+  "name": "ecotrack-ai",
   "version": "1.0.0",
-  "main": "server.js",
+  "main": "backend/server.js",
   "scripts": {
-    "dev": "nodemon server.js",
-    "start": "node server.js"
+    "start": "node backend/server.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
