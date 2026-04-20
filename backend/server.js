@@ -35,20 +35,18 @@ app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
 });
 
-// MongoDB Connection + SERVER START (FIXED)
+// ✅ FIX: Start server FIRST (important for Render)
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
+
+// ✅ FIX: Connect MongoDB separately (do NOT crash app)
 mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/ecotrack')
   .then(() => {
     console.log('✅ MongoDB Connected');
-
-    const PORT = process.env.PORT || 5000;
-
-    // ✅ IMPORTANT FIX: bind to 0.0.0.0
-    app.listen(PORT, "0.0.0.0", () => {
-      console.log(`🚀 Server running on port ${PORT}`);
-    });
-
   })
   .catch(err => {
     console.error('❌ MongoDB connection error:', err.message);
-    process.exit(1);
   });
