@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const path = require('path'); // ✅ ADDED
+const path = require('path');
 require('dotenv').config();
 
 const authRoutes = require('./routes/auth');
@@ -27,20 +27,26 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'EcoTrack AI Backend Running', timestamp: new Date() });
 });
 
-// ✅ Serve frontend build (ADD BEFORE app.get("*"))
+// Serve frontend build
 app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
-// ✅ Handle React routes (MUST BE LAST ROUTE)
+// React routing
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
 });
 
-// MongoDB Connection
+// MongoDB Connection + SERVER START (FIXED)
 mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/ecotrack')
   .then(() => {
     console.log('✅ MongoDB Connected');
+
     const PORT = process.env.PORT || 5000;
-    app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+
+    // ✅ IMPORTANT FIX: bind to 0.0.0.0
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`🚀 Server running on port ${PORT}`);
+    });
+
   })
   .catch(err => {
     console.error('❌ MongoDB connection error:', err.message);
